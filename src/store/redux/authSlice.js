@@ -4,7 +4,7 @@ import { getUsers } from "../../services/api";
 const initialState = {
     users: [],
     loading: false,
-    error: ''
+    error: '',
 }
 
 export const fetchUsers = createAsyncThunk('user/fetcUsers', async () => {

@@ -11,12 +11,24 @@ const DropdownProfile = () => {
   const navigate = useNavigate();
   const handleLogoutClick = async (e) => {
     e.preventDefault();
-    const searchUser = user.users.find((user) => user.isLogin);
+
+    if (!user || !Array.isArray(user.users)) {
+      console.error("Data user tidak tersedia atau tidak valid.");
+      return;
+    }
+
+    const searchUser = user.users.find((user) => user.isLogin === true);
+
+    if (!searchUser) {
+      console.warn("Tidak ada user yang sedang login.");
+      return;
+    }
+
     try {
       await updateUsers(searchUser.id, { ...searchUser, isLogin: false });
       navigate("/");
     } catch (error) {
-      console.error(error);
+      console.error("Gagal logout:", error);
     }
   };
   return (

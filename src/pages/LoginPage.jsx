@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchUsers } from "../store/redux/authSlice";
 import { useNavigate } from "react-router-dom";
 import { updateUsers } from "../services/api";
+import PopupMessage from "../elements/popupMessage/PopupMessage";
 
 const LoginPage = () => {
   const user = useSelector((state) => state.user);
@@ -18,6 +19,9 @@ const LoginPage = () => {
     username: "",
     password: "",
   });
+
+  const [showNotification, setShowNotification] = useState(false);
+  const [boolFor, setBoolFor] = useState(false);
 
   useEffect(() => {
     dispatch(fetchUsers());
@@ -30,26 +34,39 @@ const LoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const matchUser = user.users.find(
+    const matchUser = await user.users.find(
       (user) =>
         user.username === inputValue.username &&
         user.password === inputValue.password
     );
-    if (matchUser) {
+
+    if (!matchUser) {
+      setShowNotification(true);
+      setTimeout(() => {
+        setShowNotification(false);
+      }, 1000);
+      setBoolFor(false);
+    } else {
       try {
+        setShowNotification(true);
+        setBoolFor(true);
         await updateUsers(matchUser.id, { ...matchUser, isLogin: true });
         navigate("/home");
       } catch (error) {
         console.error(error);
       }
-    } else {
-      console.log("gagal");
     }
     setInputValue({ username: "", password: "" });
   };
 
   return (
     <AuthLayout title='Masuk' subTitle='Selamat Datang Kembali!' bgSrc='login'>
+      {showNotification && (
+        <PopupMessage
+          text={boolFor ? "Login Successful" : "Login Failed"}
+          boolForIcon={boolFor ? true : false}
+        />
+      )}
       <form
         className='w-full flex flex-col justify-center items-center gap-5 md:gap-[37px]'
         onSubmit={handleSubmit}>

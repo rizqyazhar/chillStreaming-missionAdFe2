@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { postUsers } from "../services/api";
 import { fetchUsers } from "../store/redux/authSlice";
 import { useNavigate } from "react-router-dom";
+import PopupMessage from "../elements/popupMessage/PopupMessage";
 
 const LoginPage = () => {
   const user = useSelector((state) => state.user);
@@ -22,6 +23,9 @@ const LoginPage = () => {
     confirmPassword: "",
     isLogin: false,
   });
+
+  const [showNotification, setShowNotification] = useState(false);
+  const [boolFor, setBoolFor] = useState(false);
 
   useEffect(() => {
     dispatch(fetchUsers());
@@ -46,20 +50,45 @@ const LoginPage = () => {
           isLogin: inputValue.isLogin,
         };
         try {
+          setShowNotification(true);
+          setBoolFor(true);
           await postUsers(dataToSend);
           console.log(matchUser);
           navigate("/");
         } catch (error) {
           console.error(error);
         }
+      } else {
+        setShowNotification(true);
+        setTimeout(() => {
+          setShowNotification(false);
+        }, 1000);
+        setBoolFor(false);
       }
     } else {
-      console.log("unmatch");
+      setShowNotification(true);
+      setTimeout(() => {
+        setShowNotification(false);
+      }, 1000);
+      setBoolFor(false);
     }
+    setInputValue({
+      username: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      isLogin: false,
+    });
   };
 
   return (
     <AuthLayout title='Daftar' subTitle='Selamat Datang!' bgSrc='register'>
+      {showNotification && (
+        <PopupMessage
+          text={boolFor ? "Registration Complete" : "Registration Failed"}
+          boolForIcon={boolFor ? true : false}
+        />
+      )}
       <form
         className='w-full flex flex-col justify-center items-center gap-5 md:gap-[37px]'
         onSubmit={handleSubmit}>
