@@ -7,14 +7,22 @@ import { BiSolidHide } from "react-icons/bi";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUsers } from "../store/redux/authSlice";
+import { useNavigate } from "react-router-dom";
+import { updateUsers } from "../services/api";
 
 const LoginPage = () => {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [inputValue, setInputValue] = useState({
     username: "",
     password: "",
   });
+
+  useEffect(() => {
+    dispatch(fetchUsers());
+  }, []);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (value.trim()) {
@@ -22,21 +30,27 @@ const LoginPage = () => {
     }
   };
 
-  console.log(inputValue.username);
-  console.log(inputValue.password);
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // if ()
+    const matchUser = user.users.find(
+      (user) =>
+        user.username === inputValue.username &&
+        user.username === inputValue.username
+    );
+
+    if (matchUser) {
+      console.log("berhasil");
+      try {
+        await updateUsers(matchUser.id, { ...matchUser, isLogin: true });
+        navigate("/home");
+      } catch (error) {
+        console.error(error);
+      }
+    } else {
+      console.log("gagal");
+    }
+    setInputValue({ username: "", password: "" });
   };
-
-  useEffect(() => {
-    dispatch(fetchUsers());
-  }, []);
-
-  useEffect(() => {
-    console.log("Fetched users:", user.users);
-  }, [user.users]);
 
   return (
     <AuthLayout title='Masuk' subTitle='Selamat Datang Kembali!' bgSrc='login'>
@@ -47,6 +61,7 @@ const LoginPage = () => {
           id='username'
           name='username'
           type='text'
+          value={inputValue.username}
           onChange={handleChange}
           placeholder='Masukkan username'
           htmlFor='username'
@@ -56,6 +71,7 @@ const LoginPage = () => {
           id='password'
           name='password'
           type='password'
+          value={inputValue.password}
           onChange={handleChange}
           placeholder='Masukkan kata sandi'
           htmlFor='password'
@@ -63,7 +79,7 @@ const LoginPage = () => {
           <BiSolidHide className='absolute top-[29px] md:top-[50px] right-3 md:right-5 text-xs md:text-2xl text-light-disabled cursor-pointer' />
           <div className='w-full flex justify-between font-lato mt-1.5'>
             <p className='text-light-secondary text-[10px] md:text-base tracking-[.2px] cursor-default'>
-              Belum punya akun?{" "}
+              Belum punya akun?
               <Link
                 to='/register'
                 className='text-white text-[10px] md:text-sm cursor-pointer'>

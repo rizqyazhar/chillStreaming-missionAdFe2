@@ -12,10 +12,11 @@ export const fetchUsers = createAsyncThunk('user/fetcUsers', async () => {
     return userData;
 })
 
-const userSlice = createSlice({
+const authSlice = createSlice({
     name: 'user',
     initialState,
-    reducers: {},
+    reducers: {
+    },
     extraReducers: (builder) => {
         builder.addCase(fetchUsers.pending, (state) => {
             state.loading = true
@@ -33,4 +34,5 @@ const userSlice = createSlice({
     }
 })
 
-export default userSlice.reducer;
+
+export default authSlice.reducer;

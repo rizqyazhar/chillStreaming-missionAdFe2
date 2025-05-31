@@ -23,7 +23,7 @@ const postUsers = async (postData) => {
 
 const updateUsers = async (id, updatedData) => {
     try {
-        const response = await axios.patch(`${url}/${id}`, updatedData);
+        const response = await axios.put(`${url}/${id}`, updatedData);
         console.log(response.data);
         return response.data;
     } catch (err) {
