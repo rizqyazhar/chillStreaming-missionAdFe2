@@ -35,13 +35,13 @@ const LoginPage = () => {
     const matchUser = user.users.find(
       (user) =>
         user.username === inputValue.username &&
-        user.username === inputValue.username
+        user.password === inputValue.password
     );
-
     if (matchUser) {
       console.log("berhasil");
       try {
         await updateUsers(matchUser.id, { ...matchUser, isLogin: true });
+        console.log(matchUser);
         navigate("/home");
       } catch (error) {
         console.error(error);
