@@ -10,6 +10,7 @@ const LoginPage = () => {
     <AuthLayout title='Masuk' subTitle='Selamat Datang Kembali!' bgSrc='login'>
       <InputFields
         id='username'
+        name='username'
         type='text'
         placeholder='Masukkan username'
         htmlFor='username'
@@ -17,6 +18,7 @@ const LoginPage = () => {
       />
       <InputFields
         id='password'
+        name='password'
         type='password'
         placeholder='Masukkan kata sandi'
         htmlFor='password'
