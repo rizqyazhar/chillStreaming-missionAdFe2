@@ -25,9 +25,7 @@ const LoginPage = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (value.trim()) {
-      setInputValue((prev) => ({ ...prev, [name]: value }));
-    }
+    setInputValue((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
@@ -38,10 +36,8 @@ const LoginPage = () => {
         user.password === inputValue.password
     );
     if (matchUser) {
-      console.log("berhasil");
       try {
         await updateUsers(matchUser.id, { ...matchUser, isLogin: true });
-        console.log(matchUser);
         navigate("/home");
       } catch (error) {
         console.error(error);

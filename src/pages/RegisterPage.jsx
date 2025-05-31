@@ -29,9 +29,7 @@ const LoginPage = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (value.trim()) {
-      setInputValue((prev) => ({ ...prev, [name]: value }));
-    }
+    setInputValue((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
@@ -40,7 +38,6 @@ const LoginPage = () => {
       (user) => user.email === inputValue.email
     );
     if (inputValue.password === inputValue.confirmPassword) {
-      console.log(matchUser);
       if (!matchUser) {
         const dataToSend = {
           username: inputValue.username,
@@ -55,7 +52,6 @@ const LoginPage = () => {
         } catch (error) {
           console.error(error);
         }
-        console.log("ready");
       }
     } else {
       console.log("unmatch");
