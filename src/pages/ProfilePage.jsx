@@ -6,11 +6,16 @@ import { useState, useEffect } from "react";
 import { fetchUsers } from "../store/redux/authSlice";
 import { deleteUsers, updateUsers } from "../services/api";
 import { useNavigate } from "react-router-dom";
+import PopupMessage from "../elements/popupMessage/PopupMessage";
 
 const ProfilePage = () => {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const [showDeleteNotification, setShowDeleteNotification] = useState(false);
+  const [showNotification, setShowNotification] = useState(false);
+  const [boolFor, setBoolFor] = useState(false);
 
   useEffect(() => {
     dispatch(fetchUsers());
@@ -45,9 +50,18 @@ const ProfilePage = () => {
     const searchUser = user.users.find((user) => user.isLogin);
 
     if (searchUser.username === profileInput.username) {
-      return;
+      setShowNotification(true);
+      setTimeout(() => {
+        setShowNotification(false);
+      }, 1000);
+      setBoolFor(false);
     } else if (searchUser.username !== profileInput.username) {
       try {
+        setShowNotification(true);
+        setBoolFor(true);
+        setTimeout(() => {
+          setShowNotification(false);
+        }, 1000);
         await updateUsers(searchUser.id, {
           ...searchUser,
           username: profileInput.usernameProfile,
@@ -63,6 +77,11 @@ const ProfilePage = () => {
     e.preventDefault();
     const searchUser = user.users.find((user) => user.isLogin);
     try {
+      setShowDeleteNotification(true);
+      setBoolFor(true);
+      setTimeout(() => {
+        setShowDeleteNotification(false);
+      }, 1000);
       await deleteUsers(searchUser.id);
       navigate("/");
     } catch (error) {
@@ -73,6 +92,18 @@ const ProfilePage = () => {
   return (
     <>
       <Content>
+        {showNotification && (
+          <PopupMessage
+            text={boolFor ? "Profile Updated" : "Try Again"}
+            boolForIcon={boolFor ? true : false}
+          />
+        )}
+        {showDeleteNotification && (
+          <PopupMessage
+            text={boolFor ? "Delete Successfull" : "Try Again"}
+            boolForIcon={boolFor ? true : false}
+          />
+        )}
         <section className='w-11/12 mb-20 relative grid auto-rows-2 md:auto-rows-1 md:grid-cols-2 mx-auto gap-5 md:gap-10 py-5 md:py-10'>
           <div className='row-start-2 row-end-3 md:row-start-1 md:row-end-2 md:col-start-1 md:col-end-3 w-full flex flex-col gap-6 md:gap-8'>
             <h3 className='font-lato font-bold text-xl md:text-[32px] text-white cursor-default'>
